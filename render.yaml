@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: saas-marches-publics
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        value: https://osivqomytncvkiepttfv.supabase.co
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        value: sb_publishable_y-IPJuT7utmspI0YhLSHbA_IlHHvKla
+      - key: NEXT_PUBLIC_APP_URL
+        value: https://saas-marches-publics.onrender.com
+      - key: MAX_FILE_SIZE_MB
+        value: 10
+    healthCheckPath: /login
+    autoDeploy: true
+    disk:
+      name: tmp
+      mountPath: /tmp
+      sizeGB: 1
