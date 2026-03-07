@@ -35,28 +35,47 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    if (file.type !== 'application/pdf') {
+    // Validation des types de fichiers
+    const allowedTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'text/plain',
+      'text/csv',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'application/vnd.oasis.opendocument.text'
+    ]
+    
+    const fileExtension = file.name.split('.').pop()?.toLowerCase()
+    const allowedExtensions = ['pdf', 'doc', 'docx', 'txt', 'csv', 'xls', 'xlsx', 'odt']
+    
+    if (!allowedTypes.includes(file.type) && !allowedExtensions.includes(fileExtension || '')) {
       return NextResponse.json(
-        { error: 'Only PDF files are allowed' },
+        { error: 'Unsupported file format. Allowed: PDF, DOC, DOCX, TXT, CSV, XLS, XLSX, ODT' },
         { status: 400 }
       )
     }
 
-    if (file.size > 10 * 1024 * 1024) {
+    if (file.size > 20 * 1024 * 1024) { // 20MB
       return NextResponse.json(
-        { error: 'File too large (max 10MB)' },
+        { error: 'File too large (max 20MB)' },
         { status: 400 }
       )
     }
 
-    console.log(`Processing PDF: ${file.name} for user ${user.id}`)
+    console.log(`Processing document: ${file.name} (${file.type}) for user ${user.id}`)
 
-    // Lire le fichier
-    const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
+    // Traiter le document (simulation)
+    // Dans une vraie implémentation, on importerait et utiliserait processDocument
+    const documentInfo = {
+      filename: file.name,
+      type: file.type,
+      size: file.size,
+      extracted: true
+    }
 
-    // Simuler une analyse avec DeepSeek (version de démo)
-    // Dans une vraie implémentation, on appellerait l'API DeepSeek
+    console.log(`Document info:`, documentInfo)
     const mockAnalysis = {
       metadata: {
         titre: `Analyse de ${file.name}`,

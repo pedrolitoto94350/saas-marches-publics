@@ -5,7 +5,7 @@ Application SaaS pour l'analyse IA des marchés publics destinée aux PME/TPE.
 ## 🎯 Fonctionnalités
 
 - **Authentification** sécurisée avec Supabase
-- **Upload de PDF** d'appels d'offres
+- **Upload multi-formats** : PDF, DOC, DOCX, TXT, CSV, XLS, XLSX, ODT
 - **Analyse IA** avec DeepSeek
 - **Rapports structurés** avec recommandations
 - **Dashboard** multi-tenant
@@ -49,7 +49,7 @@ DEEPSEEK_API_KEY=votre-cle-deepseek
 
 # Configuration
 NEXT_PUBLIC_APP_URL=http://localhost:3000
-MAX_FILE_SIZE_MB=10
+MAX_FILE_SIZE_MB=20
 ```
 
 ### Configuration Supabase

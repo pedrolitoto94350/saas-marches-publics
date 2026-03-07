@@ -26,14 +26,28 @@ export default function UploadPage() {
     const selectedFile = e.target.files?.[0]
     if (!selectedFile) return
 
-    // Validation
-    if (selectedFile.type !== 'application/pdf') {
-      setError('Seuls les fichiers PDF sont acceptés')
+    // Validation des types de fichiers
+    const allowedTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'text/plain',
+      'text/csv',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'application/vnd.oasis.opendocument.text'
+    ]
+    
+    const fileExtension = selectedFile.name.split('.').pop()?.toLowerCase()
+    const allowedExtensions = ['pdf', 'doc', 'docx', 'txt', 'csv', 'xls', 'xlsx', 'odt']
+    
+    if (!allowedTypes.includes(selectedFile.type) && !allowedExtensions.includes(fileExtension || '')) {
+      setError('Format de fichier non supporté. Formats acceptés : PDF, DOC, DOCX, TXT, CSV, XLS, XLSX, ODT')
       return
     }
 
-    if (selectedFile.size > 10 * 1024 * 1024) { // 10MB
-      setError('Le fichier est trop volumineux (max 10MB)')
+    if (selectedFile.size > 20 * 1024 * 1024) { // 20MB (augmenté pour les documents Word/Excel)
+      setError('Le fichier est trop volumineux (max 20MB)')
       return
     }
 
@@ -225,10 +239,10 @@ export default function UploadPage() {
               <>
                 <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <p className="text-lg font-medium text-gray-900 mb-2">
-                  Déposez votre PDF ici
+                  Déposez votre document ici
                 </p>
                 <p className="text-gray-600 mb-6">
-                  ou cliquez pour sélectionner
+                  Formats : PDF, DOC, DOCX, TXT, CSV, XLS, XLSX, ODT (max 20MB)
                 </p>
                 <label className="inline-flex items-center btn-primary cursor-pointer">
                   <Upload className="w-5 h-5 mr-2" />
@@ -246,13 +260,40 @@ export default function UploadPage() {
 
           <div className="mt-6 text-sm text-gray-500">
             <p className="mb-2">
-              <span className="font-medium">Recommandations :</span>
+              <span className="font-medium">Formats supportés :</span>
             </p>
-            <ul className="list-disc list-inside space-y-1">
-              <li>Utilisez des PDF de bonne qualité (texte sélectionnable)</li>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
+              <div className="flex items-center">
+                <span className="mr-2">📄</span>
+                <span>PDF</span>
+              </div>
+              <div className="flex items-center">
+                <span className="mr-2">📝</span>
+                <span>Word (DOC/DOCX)</span>
+              </div>
+              <div className="flex items-center">
+                <span className="mr-2">📃</span>
+                <span>Texte (TXT)</span>
+              </div>
+              <div className="flex items-center">
+                <span className="mr-2">📋</span>
+                <span>CSV</span>
+              </div>
+              <div className="flex items-center">
+                <span className="mr-2">📊</span>
+                <span>Excel (XLS/XLSX)</span>
+              </div>
+              <div className="flex items-center">
+                <span className="mr-2">📑</span>
+                <span>ODT</span>
+              </div>
+            </div>
+            <p className="mt-4 font-medium">Recommandations :</p>
+            <ul className="list-disc list-inside space-y-1 mt-1">
+              <li>Privilégiez les PDF avec texte sélectionnable</li>
               <li>Vérifiez que le document est complet</li>
-              <li>Évitez les fichiers scannés de mauvaise qualité</li>
-              <li>Taille maximale : 10 MB</li>
+              <li>Pour les scans, utilisez un PDF avec OCR</li>
+              <li>Taille maximale : 20 MB</li>
             </ul>
           </div>
 
