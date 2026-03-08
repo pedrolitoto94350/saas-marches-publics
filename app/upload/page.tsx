@@ -87,9 +87,10 @@ export default function UploadPage() {
       formData.append('file', file);
       formData.append('userId', user.id);
 
-      // Envoyer à l'API
+      // Envoyer à l'API avec les cookies
       const response = await fetch('/api/analyse', {
         method: 'POST',
+        credentials: 'include', // Inclure les cookies pour l'authentification
         body: formData,
       });
 

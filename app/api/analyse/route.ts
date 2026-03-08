@@ -1,6 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
+// Gérer les requêtes OPTIONS pour CORS
+export async function OPTIONS(request: NextRequest) {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': 'https://saas-marches-publics.vercel.app',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Access-Control-Allow-Credentials': 'true',
+    },
+  });
+}
+
 export async function POST(request: NextRequest) {
   try {
     // Vérifier l'utilisateur via les cookies (Supabase gère les cookies automatiquement)
@@ -10,7 +23,16 @@ export async function POST(request: NextRequest) {
     } = await supabase.auth.getUser();
 
     if (authError || !user) {
-      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+      return NextResponse.json(
+        { error: 'Authentication required' }, 
+        { 
+          status: 401,
+          headers: {
+            'Access-Control-Allow-Origin': 'https://saas-marches-publics.vercel.app',
+            'Access-Control-Allow-Credentials': 'true',
+          }
+        }
+      );
     }
 
     // Récupérer le fichier
@@ -195,6 +217,11 @@ export async function GET(request: NextRequest) {
         created_at: a.created_at,
         analysis_result: a.analysis_result,
       })),
+    }, {
+      headers: {
+        'Access-Control-Allow-Origin': 'https://saas-marches-publics.vercel.app',
+        'Access-Control-Allow-Credentials': 'true',
+      }
     });
   } catch (error: any) {
     console.error('API error:', error);
