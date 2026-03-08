@@ -16,23 +16,22 @@ export async function OPTIONS(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    // Vérifier l'utilisateur via les cookies (Supabase gère les cookies automatiquement)
+    // Récupérer le token d'authentification depuis les headers
+    const authHeader = request.headers.get('Authorization');
+    if (!authHeader) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+
+    // Vérifier l'utilisateur avec le token JWT
     const {
       data: { user },
       error: authError,
-    } = await supabase.auth.getUser();
+    } = await supabase.auth.getUser(token);
 
     if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Authentication required' }, 
-        { 
-          status: 401,
-          headers: {
-            'Access-Control-Allow-Origin': 'https://saas-marches-publics.vercel.app',
-            'Access-Control-Allow-Credentials': 'true',
-          }
-        }
-      );
+      return NextResponse.json({ error: 'Invalid authentication' }, { status: 401 });
     }
 
     // Récupérer le fichier

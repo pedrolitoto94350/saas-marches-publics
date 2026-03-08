@@ -7,7 +7,7 @@ import { Upload, FileText, ArrowLeft, AlertCircle, CheckCircle } from 'lucide-re
 import Link from 'next/link';
 
 export default function UploadPage() {
-  const { user, loading } = useAuth();
+  const { user, loading, getToken } = useAuth();
   const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -82,15 +82,24 @@ export default function UploadPage() {
         });
       }, 300);
 
+      // Récupérer le token JWT
+      const token = await getToken();
+      
+      if (!token) {
+        throw new Error('Authentication token not found. Please log in again.');
+      }
+
       // Préparer le FormData
       const formData = new FormData();
       formData.append('file', file);
       formData.append('userId', user.id);
 
-      // Envoyer à l'API avec les cookies
+      // Envoyer à l'API avec le token JWT
       const response = await fetch('/api/analyse', {
         method: 'POST',
-        credentials: 'include', // Inclure les cookies pour l'authentification
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
         body: formData,
       });
 
