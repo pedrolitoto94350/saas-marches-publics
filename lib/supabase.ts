@@ -5,7 +5,7 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
 // FORCER LE MODE MOCK POUR DÉBLOQUER L'APPLICATION
-const FORCE_MOCK = true; // À désactiver une fois Supabase configuré
+const FORCE_MOCK = false; // À désactiver une fois Supabase configuré
 
 // Log pour debug
 console.log('🔧 Supabase Configuration:', {
