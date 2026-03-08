@@ -14,7 +14,8 @@ export async function OPTIONS(request: NextRequest) {
   });
 }
 
-export async function POST(request: NextRequest) {
+// Wrapper pour attraper TOUTES les erreurs et toujours retourner du JSON
+async function handlePostRequest(request: NextRequest) {
   try {
     console.log('🔐 API Analyse - Début de la requête');
     
@@ -253,10 +254,29 @@ export async function GET(request: NextRequest) {
       }
     });
   } catch (error: any) {
-    console.error('API error:', error);
+    console.error('❌ ERREUR API NON CATCHÉE:', error);
+    console.error('❌ Stack:', error.stack);
+    
+    // Toujours retourner du JSON, même en cas d'erreur grave
     return NextResponse.json(
-      { error: 'Internal server error', message: error.message },
-      { status: 500 }
+      { 
+        error: 'Internal server error', 
+        message: error.message || 'Unknown error',
+        type: error.name || 'Error'
+      },
+      { 
+        status: 500,
+        headers: {
+          'Access-Control-Allow-Origin': 'https://saas-marches-publics.vercel.app',
+          'Access-Control-Allow-Credentials': 'true',
+          'Content-Type': 'application/json',
+        }
+      }
     );
   }
+}
+
+// Fonction exportée avec wrapper global
+export async function POST(request: NextRequest) {
+  return await handlePostRequest(request);
 }
