@@ -16,23 +16,44 @@ export async function OPTIONS(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('🔐 API Analyse - Début de la requête');
+    
     // Récupérer le token d'authentification depuis les headers
     const authHeader = request.headers.get('Authorization');
+    console.log('🔐 Auth Header présent:', !!authHeader);
+    if (authHeader) {
+      console.log('🔐 Auth Header:', authHeader.substring(0, 30) + '...');
+    }
+    
     if (!authHeader) {
+      console.log('❌ ERREUR: Pas de header Authorization');
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
 
     const token = authHeader.replace('Bearer ', '');
+    console.log('🔐 Token extrait length:', token.length);
+    console.log('🔐 Token prefix:', token.substring(0, 20) + '...');
 
     // Vérifier l'utilisateur avec le token JWT
+    console.log('🔐 Vérification token avec Supabase...');
     const {
       data: { user },
       error: authError,
     } = await supabase.auth.getUser(token);
 
+    console.log('🔐 Résultat vérification:');
+    console.log('🔐   User présent:', !!user);
+    console.log('🔐   Auth error:', authError);
+    
+    if (authError) {
+      console.log('❌ ERREUR Supabase:', authError.message);
+    }
+
     if (authError || !user) {
       return NextResponse.json({ error: 'Invalid authentication' }, { status: 401 });
     }
+    
+    console.log('✅ Authentification réussie pour user:', user.email);
 
     // Récupérer le fichier
     const formData = await request.formData();

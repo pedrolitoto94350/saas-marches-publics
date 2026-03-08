@@ -85,6 +85,12 @@ export default function UploadPage() {
       // Récupérer le token JWT
       const token = await getToken();
       
+      console.log('🔐 Token JWT récupéré:', token ? 'OUI' : 'NON');
+      if (token) {
+        console.log('🔐 Token length:', token.length);
+        console.log('🔐 Token prefix:', token.substring(0, 20) + '...');
+      }
+      
       if (!token) {
         throw new Error('Authentication token not found. Please log in again.');
       }
@@ -93,6 +99,10 @@ export default function UploadPage() {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('userId', user.id);
+
+      // Log de la requête
+      console.log('📤 Envoi requête API avec token JWT');
+      console.log('📤 Headers:', { 'Authorization': `Bearer ${token.substring(0, 20)}...` });
 
       // Envoyer à l'API avec le token JWT
       const response = await fetch('/api/analyse', {
