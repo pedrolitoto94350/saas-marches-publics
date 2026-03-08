@@ -14,23 +14,27 @@ Application SaaS pour l'analyse IA des marchés publics destinée aux PME/TPE.
 ## 🚀 Déploiement Rapide
 
 ### 1. Cloner le repository
+
 ```bash
 git clone https://github.com/votre-compte/saas-marches-publics
 cd saas-marches-publics
 ```
 
 ### 2. Installer les dépendances
+
 ```bash
 npm install
 ```
 
 ### 3. Configurer les variables d'environnement
+
 ```bash
 cp .env.example .env.local
 # Éditer .env.local avec vos clés
 ```
 
 ### 4. Lancer en développement
+
 ```bash
 npm run dev
 ```
@@ -57,6 +61,7 @@ MAX_FILE_SIZE_MB=20
 1. **Créer un projet** sur [Supabase](https://supabase.com)
 2. **Activer l'authentification** (Email/Password)
 3. **Créer la table `analyses`** :
+
 ```sql
 CREATE TABLE analyses (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,

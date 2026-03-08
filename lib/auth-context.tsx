@@ -1,123 +1,126 @@
-'use client'
+'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react'
-import { supabase } from './supabase'
-import { useRouter } from 'next/navigation'
+import { createContext, useContext, useEffect, useState } from 'react';
+import { supabase } from './supabase';
+import { useRouter } from 'next/navigation';
 
 interface User {
-  id: string
-  email: string
+  id: string;
+  email: string;
 }
 
 interface AuthContextType {
-  user: User | null
-  loading: boolean
-  signIn: (email: string, password: string) => Promise<{ error: any }>
-  signUp: (email: string, password: string) => Promise<{ error: any }>
-  signOut: () => Promise<void>
+  user: User | null;
+  loading: boolean;
+  signIn: (email: string, password: string) => Promise<{ error: any }>;
+  signUp: (email: string, password: string) => Promise<{ error: any }>;
+  signOut: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
-  const router = useRouter()
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     // Vérifier la session active
     const checkUser = async () => {
-      console.log('🔐 AuthContext: Checking user session...')
+      console.log('🔐 AuthContext: Checking user session...');
       try {
-        console.log('🔐 Calling supabase.auth.getSession()')
-        const { data: { session }, error } = await supabase.auth.getSession()
-        
-        console.log('🔐 Session response:', { 
-          hasSession: !!session, 
+        console.log('🔐 Calling supabase.auth.getSession()');
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession();
+
+        console.log('🔐 Session response:', {
+          hasSession: !!session,
           hasError: !!error,
-          errorMessage: error?.message 
-        })
-        
+          errorMessage: error?.message,
+        });
+
         if (error) {
-          console.error('❌ Auth session error:', error.message)
-          console.error('❌ Error details:', error)
-          setLoading(false)
-          return
+          console.error('❌ Auth session error:', error.message);
+          console.error('❌ Error details:', error);
+          setLoading(false);
+          return;
         }
-        
+
         if (session?.user) {
-          console.log('✅ User authenticated:', session.user.email)
+          console.log('✅ User authenticated:', session.user.email);
           setUser({
             id: session.user.id,
-            email: session.user.email!
-          })
+            email: session.user.email!,
+          });
         } else {
-          console.log('ℹ️ No active session')
+          console.log('ℹ️ No active session');
         }
       } catch (error: any) {
-        console.error('❌ Auth check failed:', error)
-        console.error('❌ Error stack:', error.stack)
+        console.error('❌ Auth check failed:', error);
+        console.error('❌ Error stack:', error.stack);
       } finally {
-        console.log('🔐 Auth check complete, setting loading to false')
-        setLoading(false)
+        console.log('🔐 Auth check complete, setting loading to false');
+        setLoading(false);
       }
-    }
+    };
 
-    checkUser()
+    checkUser();
 
     // Écouter les changements d'auth
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (session?.user) {
-          setUser({
-            id: session.user.id,
-            email: session.user.email!
-          })
-        } else {
-          setUser(null)
-        }
-        setLoading(false)
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event: any, session: any) => {
+      if (session?.user) {
+        setUser({
+          id: session.user.id,
+          email: session.user.email!,
+        });
+      } else {
+        setUser(null);
       }
-    )
+      setLoading(false);
+    });
 
     return () => {
-      subscription.unsubscribe()
-    }
-  }, [])
+      subscription.unsubscribe();
+    };
+  }, []);
 
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
-    })
-    return { error }
-  }
+    });
+    return { error };
+  };
 
   const signUp = async (email: string, password: string) => {
     const { error } = await supabase.auth.signUp({
       email,
       password,
-    })
-    return { error }
-  }
+    });
+    return { error };
+  };
 
   const signOut = async () => {
-    await supabase.auth.signOut()
-    setUser(null)
-    router.push('/login')
-  }
+    await supabase.auth.signOut();
+    setUser(null);
+    router.push('/login');
+  };
 
   return (
     <AuthContext.Provider value={{ user, loading, signIn, signUp, signOut }}>
       {children}
     </AuthContext.Provider>
-  )
+  );
 }
 
 export function useAuth() {
-  const context = useContext(AuthContext)
+  const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider')
+    throw new Error('useAuth must be used within an AuthProvider');
   }
-  return context
+  return context;
 }

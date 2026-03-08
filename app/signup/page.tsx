@@ -1,48 +1,46 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { useAuth } from '@/lib/auth-context'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { AlertCircle, Mail, Lock, Building } from 'lucide-react'
+import { useState } from 'react';
+import { useAuth } from '@/lib/auth-context';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { AlertCircle, Mail, Lock, Building } from 'lucide-react';
 
 export default function SignupPage() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [company, setCompany] = useState('')
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const { signUp } = useAuth()
-  const router = useRouter()
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [company, setCompany] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const { signUp } = useAuth();
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-    setSuccess('')
-    setIsLoading(true)
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+    setIsLoading(true);
 
-    const { error } = await signUp(email, password)
-    
+    const { error } = await signUp(email, password);
+
     if (error) {
-      setError(error.message)
+      setError(error.message);
     } else {
-      setSuccess('Compte créé avec succès ! Vous pouvez maintenant vous connecter.')
+      setSuccess('Compte créé avec succès ! Vous pouvez maintenant vous connecter.');
       // Redirection automatique après 2 secondes
       setTimeout(() => {
-        router.push('/login')
-      }, 2000)
+        router.push('/login');
+      }, 2000);
     }
-    
-    setIsLoading(false)
-  }
+
+    setIsLoading(false);
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen flex-col justify-center bg-gray-50 py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h1 className="text-center text-3xl font-bold text-gray-900">
-          Créer un compte
-        </h1>
+        <h1 className="text-center text-3xl font-bold text-gray-900">Créer un compte</h1>
         <p className="mt-2 text-center text-sm text-gray-600">
           Commencez à analyser vos appels d'offres
         </p>
@@ -50,31 +48,29 @@ export default function SignupPage() {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="card">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">
-            Inscription
-          </h2>
+          <h2 className="mb-6 text-2xl font-bold text-gray-900">Inscription</h2>
 
           {error && (
-            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center text-red-700">
-              <AlertCircle className="w-5 h-5 mr-2" />
+            <div className="mb-4 flex items-center rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
+              <AlertCircle className="mr-2 h-5 w-5" />
               {error}
             </div>
           )}
 
           {success && (
-            <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center text-green-700">
-              <AlertCircle className="w-5 h-5 mr-2" />
+            <div className="mb-4 flex items-center rounded-lg border border-green-200 bg-green-50 p-4 text-green-700">
+              <AlertCircle className="mr-2 h-5 w-5" />
               {success}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-gray-700">
                 Nom de l'entreprise
               </label>
               <div className="relative">
-                <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Building className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-gray-400" />
                 <input
                   type="text"
                   value={company}
@@ -87,11 +83,11 @@ export default function SignupPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-gray-700">
                 Email professionnel
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-gray-400" />
                 <input
                   type="email"
                   value={email}
@@ -104,11 +100,9 @@ export default function SignupPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Mot de passe
-              </label>
+              <label className="mb-2 block text-sm font-medium text-gray-700">Mot de passe</label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-gray-400" />
                 <input
                   type="password"
                   value={password}
@@ -125,10 +119,8 @@ export default function SignupPage() {
             </div>
 
             <div className="text-sm text-gray-600">
-              <p className="mb-2">
-                En vous inscrivant, vous acceptez :
-              </p>
-              <ul className="list-disc list-inside space-y-1 text-gray-500">
+              <p className="mb-2">En vous inscrivant, vous acceptez :</p>
+              <ul className="list-inside list-disc space-y-1 text-gray-500">
                 <li>Les conditions d'utilisation</li>
                 <li>La politique de confidentialité</li>
                 <li>L'utilisation de l'IA pour l'analyse des documents</li>
@@ -138,16 +130,16 @@ export default function SignupPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-primary w-full disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isLoading ? 'Création du compte...' : 'Créer mon compte'}
             </button>
           </form>
 
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            <p className="text-sm text-gray-600 text-center">
+          <div className="mt-6 border-t border-gray-200 pt-6">
+            <p className="text-center text-sm text-gray-600">
               Déjà un compte ?{' '}
-              <Link href="/login" className="text-primary-600 hover:text-primary-500 font-medium">
+              <Link href="/login" className="font-medium text-primary-600 hover:text-primary-500">
                 Se connecter
               </Link>
             </p>
@@ -159,5 +151,5 @@ export default function SignupPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
