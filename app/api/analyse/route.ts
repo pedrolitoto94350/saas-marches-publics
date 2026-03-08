@@ -173,8 +173,17 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (saveError) {
-      console.error('Save error:', saveError);
-      return NextResponse.json({ error: 'Failed to save analysis' }, { status: 500 });
+      console.error('❌ ERREUR INSERTION ANALYSE:', saveError);
+      console.error('❌ Détails:', {
+        user_id: user.id,
+        user_id_type: typeof user.id,
+        filename: file.name,
+        file_size: file.size,
+      });
+      return NextResponse.json({ 
+        error: 'Failed to save analysis',
+        details: saveError.message 
+      }, { status: 500 });
     }
 
     return NextResponse.json({
